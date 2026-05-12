@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Chandru Business Calculator – Skill Mentor Tamil</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0a0a;--s1:#111;--s2:#1a1a1a;--s3:#252525;--border:#222;--accent:#e8ff00;--red:#ff4444;--orange:#ff9500;--green:#00e676;--text:#f0f0f0;--muted:#888;--dim:#555}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh}
+/* LANDING */
+#landing{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:60px 20px 40px}
+.logo-word{font-family:'Bebas Neue',sans-serif;font-size:clamp(70px,18vw,150px);letter-spacing:.05em;line-height:1;color:var(--accent);text-shadow:0 0 80px rgba(232,255,0,.2)}
+.logo-sub{font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-top:-4px;margin-bottom:6px}
+.by-line{font-size:13px;color:var(--dim);margin-bottom:8px}
+.by-line strong{color:var(--muted)}
+.badge{display:inline-block;border:1px solid var(--accent);color:var(--accent);font-size:11px;letter-spacing:.15em;text-transform:uppercase;padding:4px 16px;border-radius:2px;margin-bottom:36px}
+.hero-heading{font-size:clamp(26px,6vw,46px);font-weight:800;line-height:1.2;text-align:center;max-width:560px;margin-bottom:14px}
+.hero-heading em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:15px;color:var(--muted);text-align:center;max-width:440px;line-height:1.75;margin-bottom:16px}
+.hero-sub strong{color:var(--text)}
+.count-pill{background:var(--s2);border:1px solid var(--border);border-radius:20px;padding:7px 22px;font-size:13px;color:var(--accent);font-weight:700;margin-bottom:32px}
+.currency-wrap,.form-group{width:100%;max-width:420px;margin-bottom:12px}
+.field-label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+select,input[type="text"],input[type="email"]{width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;padding:14px 16px;border-radius:6px;outline:none;transition:border-color .2s;appearance:none;-webkit-appearance:none}
+select:focus,input:focus{border-color:var(--accent)}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}
+.cta-btn{width:100%;max-width:420px;background:var(--accent);color:#0a0a0a;font-family:'Inter',sans-serif;font-size:16px;font-weight:800;letter-spacing:.04em;border:none;padding:17px;border-radius:6px;cursor:pointer;margin-top:4px;transition:opacity .15s,transform .15s}
+.cta-btn:hover{opacity:.9;transform:translateY(-1px)}
+.no-spam{font-size:12px;color:var(--dim);margin-top:10px;text-align:center}
+.unlocked-msg{display:none;background:var(--s2);border:1px solid var(--accent);color:var(--accent);font-size:14px;font-weight:600;padding:14px 20px;border-radius:6px;width:100%;max-width:420px;text-align:center;margin-top:6px}
+/* CALC LIST */
+.calc-list{width:100%;max-width:480px;margin-top:44px;display:none;flex-direction:column}
+.search-wrap{width:100%;margin-bottom:20px;position:relative}
+.search-wrap input{background:var(--s1);border:1px solid var(--border);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;padding:12px 16px 12px 44px;border-radius:6px;width:100%;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:15px;pointer-events:none}
+.cat-label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);padding:28px 0 10px;border-bottom:1px solid var(--accent);font-weight:700}
+.calc-item{display:flex;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;gap:10px}
+.calc-item:hover .cname{color:var(--accent)}
+.calc-item:hover .carr{color:var(--accent)}
+.cnum{font-size:11px;color:var(--dim);width:24px;flex-shrink:0;font-weight:700}
+.cname{flex:1;font-size:14px;font-weight:500;color:var(--text);transition:color .15s}
+.ctag{font-size:10px;background:var(--s3);color:var(--muted);padding:2px 8px;border-radius:10px;flex-shrink:0}
+.carr{font-size:14px;color:var(--dim);transition:color .15s;flex-shrink:0}
+/* CALC SCREEN */
+#calc-screen{display:none;min-height:100vh;padding-bottom:80px}
+.calc-header{position:sticky;top:0;background:rgba(10,10,10,.97);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:14px 20px;z-index:10}
+.back-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;padding:7px 14px;border-radius:4px;cursor:pointer;transition:border-color .15s,color .15s;flex-shrink:0;white-space:nowrap}
+.back-btn:hover{border-color:var(--accent);color:var(--accent)}
+.calc-header-title{font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.calc-body{max-width:580px;margin:0 auto;padding:36px 20px}
+.calc-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,8vw,52px);letter-spacing:.03em;color:var(--accent);margin-bottom:14px;line-height:1.05}
+.calc-desc{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:26px;border-left:2px solid var(--accent);padding-left:14px}
+.explain-box{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:22px}
+.explain-box h4{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.explain-box p,.explain-box li{font-size:13px;color:var(--muted);line-height:1.75}
+.explain-box ul{list-style:none;padding:0}
+.explain-box ul li::before{content:'→ ';color:var(--accent);font-size:11px}
+.formula-ref{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:26px}
+.formula-ref h4{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.fref-text{font-size:13px;color:var(--muted);font-family:'Courier New',monospace;line-height:1.7}
+.input-section{margin-bottom:16px}
+.input-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.hint{color:var(--dim);font-size:10px;text-transform:none;letter-spacing:0;margin-left:6px}
+.input-wrap{position:relative}
+.csym{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;pointer-events:none}
+.input-wrap input[type="number"]{width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);font-family:'Inter',sans-serif;font-size:20px;font-weight:700;padding:14px 16px 14px 36px;border-radius:6px;outline:none;transition:border-color .2s;-moz-appearance:textfield}
+.input-wrap input[type="number"]::-webkit-outer-spin-button,.input-wrap input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none}
+.input-wrap input[type="number"]:focus{border-color:var(--accent)}
+.nsym input[type="number"]{padding-left:16px}
+/* results */
+.result-box{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:24px;margin:26px 0 18px}
+.rl{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.rv{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,10vw,60px);letter-spacing:.02em;color:var(--accent);line-height:1}
+.rv.neg{color:var(--red)}
+.rv.warn{color:var(--orange)}
+.rv.good{color:var(--green)}
+.rv.ph{font-size:16px;color:var(--dim);font-style:italic;font-family:'Inter',sans-serif;font-weight:400}
+.ftag{font-size:11px;color:var(--dim);border-top:1px solid var(--border);padding-top:14px;margin-top:16px;font-family:'Courier New',monospace;line-height:1.6}
+.multi-result{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:26px 0 18px}
+.mini-box{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:16px}
+.mini-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.mini-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);line-height:1}
+.mini-val.neg{color:var(--red)}
+.mini-val.warn{color:var(--orange)}
+.mini-val.good{color:var(--green)}
+.tab-row{display:flex;margin-bottom:22px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.tab-btn{flex:1;background:var(--s1);border:none;color:var(--muted);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:12px 8px;cursor:pointer;transition:background .15s,color .15s}
+.tab-btn.active{background:var(--accent);color:#0a0a0a}
+.slab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.slab-btn{background:var(--s1);border:1px solid var(--border);color:var(--muted);font-family:'Inter',sans-serif;font-size:14px;font-weight:700;padding:10px 18px;border-radius:6px;cursor:pointer;transition:all .15s}
+.slab-btn.active{background:var(--accent);border-color:var(--accent);color:#0a0a0a}
+.calc-footer{margin-top:60px;padding-top:26px;border-top:1px solid var(--border);text-align:center}
+.f-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--accent);letter-spacing:.05em}
+.calc-footer p{font-size:12px;color:var(--dim);margin-top:6px;line-height:1.8}
+.site-footer{border-top:1px solid var(--border);padding:24px 20px;text-align:center;margin-top:40px}
+.site-footer p{font-size:12px;color:var(--dim)}
+.disclaimer{font-size:11px;color:var(--dim);line-height:1.7;margin-top:24px;text-align:center;max-width:440px}
+</style>
+</head>
+<body>
+
+<!-- ══ LANDING ══ -->
+<div id="landing">
+  <div class="logo-word">CHANDRU</div>
+  <div class="logo-sub">Business Calculator</div>
+  <div class="by-line">By <strong>Chandru</strong> · Skill Mentor Tamil</div>
+  <div class="badge">Free Access · 28+ Calculators</div>
+  <h1 class="hero-heading">Every Business Formula.<br><em>One Free Tool.</em></h1>
+  <p class="hero-sub">28+ essential business calculators. Profit, Pricing, GST, Ads, ROI, Loans & more. <strong>100% free.</strong> No fluff. Just numbers.</p>
+  <div class="count-pill">🧮 28 Calculators &nbsp;·&nbsp; 0 Paid &nbsp;·&nbsp; Forever Free</div>
+
+  <div class="currency-wrap">
+    <div class="field-label">Select your currency</div>
+    <select id="currency-sel" onchange="sym=this.value">
+      <option value="₹">₹ Indian Rupee</option>
+      <option value="$">$ US Dollar</option>
+      <option value="€">€ Euro</option>
+      <option value="£">£ Pound</option>
+    </select>
+  </div>
+  <div class="form-group"><div class="field-label">Your Name</div><input type="text" id="uname" placeholder="Enter your name"/></div>
+  <div class="form-group"><div class="field-label">Your Email</div><input type="email" id="uemail" placeholder="Enter your email"/></div>
+  <button class="cta-btn" onclick="unlockAccess()">Unlock Free Access →</button>
+  <div class="no-spam">No spam. Ever. Your email stays safe.</div>
+  <div class="unlocked-msg" id="umsg">✓ You're in! Scroll down to use all 28 calculators.</div>
+
+  <div class="calc-list" id="clist">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search calculators..." oninput="filterCalcs(this.value)"/>
+    </div>
+
+    <div class="cat-label" data-cat="1">📊 Basic Profit & Loss (Formulas 1–11)</div>
+    <div class="calc-item" onclick="openCalc('profit-pct')" data-s="profit percentage cost price selling price">
+      <span class="cnum">01</span><span class="cname">Profit Percentage</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('loss-pct')" data-s="loss percentage cost price selling price">
+      <span class="cnum">02</span><span class="cname">Loss Percentage</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('cp-profit')" data-s="cost price selling price profit known">
+      <span class="cnum">03</span><span class="cname">Cost Price (when SP & Profit% known)</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('cp-loss')" data-s="cost price selling price loss known">
+      <span class="cnum">04</span><span class="cname">Cost Price (when SP & Loss% known)</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('sp-profit')" data-s="selling price cost price profit">
+      <span class="cnum">05</span><span class="cname">Selling Price (Profit scenario)</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('sp-loss')" data-s="selling price cost price loss">
+      <span class="cnum">06</span><span class="cname">Selling Price (Loss scenario)</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('discount')" data-s="discount marked price selling price">
+      <span class="cnum">07</span><span class="cname">Discount Amount</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('discount-pct')" data-s="discount percentage marked price">
+      <span class="cnum">08</span><span class="cname">Discount Percentage</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('cp-mp')" data-s="cost price marked price discount profit loss">
+      <span class="cnum">09</span><span class="cname">CP from Marked Price (Discount ± P/L)</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('bep')" data-s="break even point fixed cost units">
+      <span class="cnum">10</span><span class="cname">Break-Even Point (BEP)</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('roi')" data-s="return on investment roi net profit">
+      <span class="cnum">11</span><span class="cname">Return on Investment (ROI)</span><span class="ctag">Basic</span><span class="carr">→</span></div>
+
+    <div class="cat-label" data-cat="2">💼 Business Fundamentals</div>
+    <div class="calc-item" onclick="openCalc('contribution')" data-s="contribution margin variable cost unit">
+      <span class="cnum">12</span><span class="cname">Contribution Margin</span><span class="ctag">Core</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('pricing')" data-s="pricing selling price target margin">
+      <span class="cnum">13</span><span class="cname">Pricing Calculator</span><span class="ctag">Core</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('markup-margin')" data-s="markup margin cost selling">
+      <span class="cnum">14</span><span class="cname">Markup vs Margin</span><span class="ctag">Core</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('profit-ads')" data-s="profit after ads revenue net">
+      <span class="cnum">15</span><span class="cname">Profit After Ads</span><span class="ctag">Core</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('gross-margin')" data-s="gross margin cogs revenue">
+      <span class="cnum">16</span><span class="cname">Gross Margin</span><span class="ctag">Core</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('net-margin')" data-s="net profit margin revenue">
+      <span class="cnum">17</span><span class="cname">Net Profit Margin</span><span class="ctag">Core</span><span class="carr">→</span></div>
+
+    <div class="cat-label" data-cat="3">📣 Marketing & Ads</div>
+    <div class="calc-item" onclick="openCalc('cac')" data-s="customer acquisition cost cac marketing">
+      <span class="cnum">18</span><span class="cname">Customer Acquisition Cost (CAC)</span><span class="ctag">Ads</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('ltv')" data-s="lifetime value ltv customer">
+      <span class="cnum">19</span><span class="cname">Customer Lifetime Value (LTV)</span><span class="ctag">Ads</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('ltv-cac')" data-s="ltv cac ratio health">
+      <span class="cnum">20</span><span class="cname">LTV : CAC Ratio</span><span class="ctag">Ads</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('roas')" data-s="roas return on ad spend">
+      <span class="cnum">21</span><span class="cname">ROAS (Return on Ad Spend)</span><span class="ctag">Ads</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('cpm-cpc')" data-s="cpm cpc impressions clicks cost">
+      <span class="cnum">22</span><span class="cname">CPM & CPC Calculator</span><span class="ctag">Ads</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('conversion')" data-s="conversion rate visitors leads">
+      <span class="cnum">23</span><span class="cname">Conversion Rate</span><span class="ctag">Ads</span><span class="carr">→</span></div>
+
+    <div class="cat-label" data-cat="4">💰 Cash & Finance</div>
+    <div class="calc-item" onclick="openCalc('burn')" data-s="cash burn rate runway expenses">
+      <span class="cnum">24</span><span class="cname">Cash Burn Rate & Runway</span><span class="ctag">Finance</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('gst')" data-s="gst tax add remove slab">
+      <span class="cnum">25</span><span class="cname">GST Calculator</span><span class="ctag">Finance</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('emi')" data-s="emi loan monthly payment interest">
+      <span class="cnum">26</span><span class="cname">EMI / Loan Calculator</span><span class="ctag">Finance</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('simple-interest')" data-s="simple interest principal rate time">
+      <span class="cnum">27</span><span class="cname">Simple Interest</span><span class="ctag">Finance</span><span class="carr">→</span></div>
+    <div class="calc-item" onclick="openCalc('compound-interest')" data-s="compound interest growth investment">
+      <span class="cnum">28</span><span class="cname">Compound Interest</span><span class="ctag">Finance</span><span class="carr">→</span></div>
+  </div>
+
+  <p class="disclaimer"><strong>Disclaimer:</strong> All calculators are for informational purposes only. Results are estimates. Consult a qualified financial advisor before making business decisions. By submitting your email you agree to receive updates from Skill Mentor Tamil.</p>
+  <div class="site-footer"><p>© 2026 Skill Mentor Tamil · By Chandru · @skillmentortamil</p></div>
+</div>
+
+<!-- ══ CALC SCREEN ══ -->
+<div id="calc-screen">
+  <div class="calc-header">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    <span class="calc-header-title" id="cht"></span>
+  </div>
+  <div class="calc-body" id="cb"></div>
+</div>
+
+<script>
+let sym='₹', unlocked=false, curCalc=null, autoFn=null;
+
+function unlockAccess(){
+  const n=document.getElementById('uname').value.trim();
+  const e=document.getElementById('uemail').value.trim();
+  if(!n||!e){alert('Please enter your name and email.');return}
+  if(!e.includes('@')){alert('Please enter a valid email.');return}
+  unlocked=true;
+  const um=document.getElementById('umsg');um.style.display='block';
+  const cl=document.getElementById('clist');cl.style.display='flex';
+  const b=document.querySelector('.cta-btn');b.textContent='✓ Access Unlocked';b.style.opacity='.6';b.style.cursor='default';
+  setTimeout(()=>cl.scrollIntoView({behavior:'smooth'}),200);
+}
+
+function filterCalcs(q){
+  q=q.toLowerCase().trim();
+  const cats={};
+  document.querySelectorAll('#clist .calc-item').forEach(el=>{
+    const s=(el.dataset.s||'')+' '+(el.querySelector('.cname')?.textContent||'');
+    const vis=!q||s.toLowerCase().includes(q);
+    el.style.display=vis?'flex':'none';
+    const cat=el.previousElementSibling?.dataset?.cat;
+    if(cat&&vis)cats[cat]=true;
+  });
+  document.querySelectorAll('#clist .cat-label').forEach(el=>{
+    el.style.display=(!q||cats[el.dataset.cat])?'':'none';
+  });
+}
+
+function openCalc(id){
+  curCalc=id;
+  document.getElementById('landing').style.display='none';
+  document.getElementById('calc-screen').style.display='block';
+  renderCalc(id);window.scrollTo(0,0);
+}
+function goBack(){
+  document.getElementById('calc-screen').style.display='none';
+  document.getElementById('landing').style.display='flex';
+  curCalc=null;autoFn=null;
+  if(unlocked)setTimeout(()=>document.getElementById('clist').scrollIntoView({behavior:'smooth'}),100);
+}
+
+const NAMES={
+  'profit-pct':'Profit Percentage','loss-pct':'Loss Percentage',
+  'cp-profit':'Cost Price (Profit Known)','cp-loss':'Cost Price (Loss Known)',
+  'sp-profit':'Selling Price (Profit)','sp-loss':'Selling Price (Loss)',
+  'discount':'Discount Amount','discount-pct':'Discount Percentage',
+  'cp-mp':'CP from Marked Price','bep':'Break-Even Point','roi':'Return on Investment',
+  'contribution':'Contribution Margin','pricing':'Pricing Calculator',
+  'markup-margin':'Markup vs Margin','profit-ads':'Profit After Ads',
+  'gross-margin':'Gross Margin','net-margin':'Net Profit Margin',
+  'cac':'Customer Acquisition Cost','ltv':'Customer Lifetime Value',
+  'ltv-cac':'LTV : CAC Ratio','roas':'ROAS','cpm-cpc':'CPM & CPC',
+  'conversion':'Conversion Rate','burn':'Cash Burn Rate & Runway',
+  'gst':'GST Calculator','emi':'EMI Calculator',
+  'simple-interest':'Simple Interest','compound-interest':'Compound Interest'
+};
+
+function gv(id){const e=document.getElementById('i-'+id);return e?parseFloat(e.value)||0:0}
+function hv(id){const e=document.getElementById('i-'+id);return e&&e.value.trim()!==''}
+function fmt(v,u){
+  if(v===null||v===undefined||isNaN(v)||!isFinite(v))return null;
+  if(u==='%')return v.toFixed(2)+'%';
+  if(u==='x')return v.toFixed(2)+'x';
+  if(u==='units')return Math.ceil(Math.abs(v))+' units/month';
+  if(u==='months')return v.toFixed(1)+' months';
+  const a=Math.abs(v);let s=v<0?'-':'';
+  if(a>=1e7)s+=sym+(a/1e7).toFixed(2)+' Cr';
+  else if(a>=1e5)s+=sym+(a/1e5).toFixed(2)+' L';
+  else s+=sym+a.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  return s;
+}
+
+function cfooter(){return`<div class="calc-footer"><div class="f-logo">CHANDRU</div><p>Business Calculator · By <strong>Chandru</strong> · Skill Mentor Tamil<br>@skillmentortamil<br><br>Results are estimates for informational purposes only.</p></div>`}
+
+function ni(id,label,hasSym,hint){
+  return`<div class="input-section">
+    <div class="input-label">${label}${hint?`<span class="hint">(${hint})</span>`:''}</div>
+    <div class="input-wrap ${hasSym?'':'nsym'}">
+      ${hasSym?`<span class="csym">${sym}</span>`:''}
+      <input type="number" id="i-${id}" placeholder="0" min="0" oninput="if(autoFn)autoFn()"/>
+    </div></div>`;
+}
+
+function setRV(val,u,label){
+  const rv=document.getElementById('rv0'),rl=document.getElementById('rl0');
+  if(!rv)return;if(rl&&label)rl.textContent=label;
+  if(val===null){rv.className='rv ph';rv.style.color='';rv.textContent='Enter your numbers above';return}
+  if(u==='ratio'){
+    rv.className='rv'+(val>=3?' good':val>=1?' warn':' neg');rv.style.color='';rv.textContent=val.toFixed(2)+':1';return;
+  }
+  const f=fmt(val,u);
+  if(!f){rv.className='rv ph';rv.textContent='—';return}
+  rv.className='rv'+(val<0?' neg':(u==='%'&&val>0)?' good':'');rv.style.color='';rv.textContent=f;
+}
+
+function addSub(label,val,u,id){
+  id=id||'sub0';let s=document.getElementById(id);
+  const rb=document.getElementById('rv0')?.parentNode;if(!rb)return;
+  if(!s){s=document.createElement('div');s.id=id;s.style.cssText='margin-top:14px;padding-top:14px;border-top:1px solid var(--border)';rb.appendChild(s)}
+  if(val===null||isNaN(val)){s.innerHTML='';return}
+  s.innerHTML=`<div class="rl">${label}</div><div class="mini-val ${val<0?'neg':''}" style="font-size:30px">${fmt(val,u)||'—'}</div>`;
+}
+
+function stdHTML(id,desc,fref,inputs,rLabel,ftag,explains){
+  let h=`<div class="calc-title">${NAMES[id]||id}</div><p class="calc-desc">${desc}</p>`;
+  if(explains)explains.forEach(e=>h+=`<div class="explain-box"><h4>${e.q}</h4>${e.a}</div>`);
+  if(fref)h+=`<div class="formula-ref"><h4>Formula Reference</h4><div class="fref-text">${fref}</div></div>`;
+  inputs.forEach(i=>h+=ni(i.id,i.label,i.sym!==false,i.hint));
+  h+=`<div class="result-box"><div class="rl" id="rl0">${rLabel}</div><div class="rv ph" id="rv0">Enter your numbers above</div><div class="ftag">${ftag}</div></div>`;
+  h+=cfooter();return h;
+}
+
+// ══ ALL CALCS ══
+function renderCalc(id){
+  const body=document.getElementById('cb');
+  document.getElementById('cht').textContent=NAMES[id]||id;
+  autoFn=null;
+
+  if(id==='markup-margin'){renderMM(body);return}
+  if(id==='gst'){renderGST(body);return}
+  if(id==='cp-mp'){renderCPMP(body);return}
+  if(id==='cpm-cpc'){renderCPMCPC(body);return}
+  if(id==='emi'){renderEMI(body);return}
+
+  const C={
+    'profit-pct':{
+      desc:'Profit % tells you how much profit you made for every rupee you spent. Higher = more efficient business.',
+      fref:'Profit % = [(SP − CP) ÷ CP] × 100',
+      inputs:[{id:'sp',label:'Selling Price',sym:true},{id:'cp',label:'Cost Price',sym:true}],
+      rLabel:'Profit Percentage',ftag:'Formula: [(SP − CP) ÷ CP] × 100',
+      fn(){const p=gv('sp')-gv('cp');setRV(gv('cp')>0?p/gv('cp')*100:null,'%');addSub('Profit Amount',p)}
+    },
+    'loss-pct':{
+      desc:'Loss % tells you how much you lost compared to your cost. Use this to fix your pricing.',
+      fref:'Loss % = [(CP − SP) ÷ CP] × 100',
+      inputs:[{id:'cp',label:'Cost Price',sym:true},{id:'sp',label:'Selling Price',sym:true}],
+      rLabel:'Loss Percentage',ftag:'Formula: [(CP − SP) ÷ CP] × 100',
+      fn(){const l=gv('cp')-gv('sp');setRV(gv('cp')>0?l/gv('cp')*100:null,'%');addSub('Loss Amount',l)}
+    },
+    'cp-profit':{
+      desc:'When you know the Selling Price and Profit %, find the original Cost Price using this formula.',
+      fref:'CP = [100 ÷ (100 + Profit%)] × SP',
+      inputs:[{id:'sp',label:'Selling Price',sym:true},{id:'pp',label:'Profit Percentage',sym:false,hint:'%'}],
+      rLabel:'Cost Price',ftag:'Formula: CP = [100 ÷ (100 + Profit%)] × SP',
+      fn(){setRV(100/(100+gv('pp'))*gv('sp'))}
+    },
+    'cp-loss':{
+      desc:'When you know the Selling Price and Loss %, find the original Cost Price using this formula.',
+      fref:'CP = [100 ÷ (100 − Loss%)] × SP',
+      inputs:[{id:'sp',label:'Selling Price',sym:true},{id:'lp',label:'Loss Percentage',sym:false,hint:'%'}],
+      rLabel:'Cost Price',ftag:'Formula: CP = [100 ÷ (100 − Loss%)] × SP',
+      fn(){if(gv('lp')>=100)return setRV(null);setRV(100/(100-gv('lp'))*gv('sp'))}
+    },
+    'sp-profit':{
+      desc:'Know Cost Price and desired Profit %? Find the exact price to sell at.',
+      fref:'SP = [(100 + Profit%) ÷ 100] × CP',
+      inputs:[{id:'cp',label:'Cost Price',sym:true},{id:'pp',label:'Profit Percentage',sym:false,hint:'%'}],
+      rLabel:'Selling Price',ftag:'Formula: SP = [(100 + Profit%) ÷ 100] × CP',
+      fn(){const sp=(100+gv('pp'))/100*gv('cp');setRV(sp);addSub('Profit Amount',sp-gv('cp'))}
+    },
+    'sp-loss':{
+      desc:'Know Cost Price and Loss %? Find the selling price in a loss scenario (clearance / discounts).',
+      fref:'SP = [(100 − Loss%) ÷ 100] × CP',
+      inputs:[{id:'cp',label:'Cost Price',sym:true},{id:'lp',label:'Loss Percentage',sym:false,hint:'%'}],
+      rLabel:'Selling Price',ftag:'Formula: SP = [(100 − Loss%) ÷ 100] × CP',
+      fn(){if(gv('lp')>=100)return setRV(null);const sp=(100-gv('lp'))/100*gv('cp');setRV(sp);addSub('Loss Amount',gv('cp')-sp)}
+    },
+    'discount':{
+      desc:'Discount is simply Marked Price minus Selling Price. Tells you the exact rupee discount you are giving.',
+      fref:'Discount = Marked Price − Selling Price',
+      inputs:[{id:'mp',label:'Marked Price (MRP)',sym:true},{id:'sp',label:'Selling Price',sym:true}],
+      rLabel:'Discount Amount',ftag:'Formula: Marked Price − Selling Price = Discount',
+      fn(){const d=gv('mp')-gv('sp');setRV(d);addSub('Discount %',gv('mp')>0?d/gv('mp')*100:null,'%')}
+    },
+    'discount-pct':{
+      desc:'Discount % shows what fraction of MRP you are giving for free. Key for running promotions and ad campaigns.',
+      fref:'Discount % = (Discount ÷ Marked Price) × 100',
+      inputs:[{id:'mp',label:'Marked Price (MRP)',sym:true},{id:'sp',label:'Selling Price',sym:true}],
+      rLabel:'Discount Percentage',ftag:'Formula: [(MP − SP) ÷ MP] × 100 = Discount %',
+      fn(){if(gv('mp')<=0)return setRV(null);const d=gv('mp')-gv('sp');setRV(d/gv('mp')*100,'%');addSub('Discount Amount',d)}
+    },
+    'bep':{
+      desc:'Minimum units to sell per month to not lose money. Every unit after BEP = profit. Include ad spend in Fixed Costs.',
+      fref:'BEP = Fixed Costs ÷ (SP − Variable Cost per unit)',
+      explains:[{q:'What are Fixed Costs?',a:'<ul><li>Rent & office expenses</li><li>Employee salaries</li><li>Software subscriptions</li><li>Internet & utilities</li><li>Monthly EMIs</li><li>Agency retainers & ad spend</li></ul>'}],
+      inputs:[{id:'fc',label:'Total Fixed Costs (per month)',sym:true},{id:'sp',label:'Selling Price (per unit)',sym:true},{id:'vc',label:'Variable Cost (per unit)',sym:true}],
+      rLabel:'Break-Even Units',ftag:'Formula: Fixed Costs ÷ (SP − Variable Cost) = BEP Units',
+      fn(){const cm=gv('sp')-gv('vc');if(cm<=0)return setRV(null);const bep=gv('fc')/cm;setRV(bep,'units');addSub('BEP Revenue',bep*gv('sp'))}
+    },
+    'roi':{
+      desc:'ROI tells you how much profit you made for every rupee invested. Positive = made money. Negative = lost money.',
+      fref:'ROI % = (Net Profit ÷ Total Investment) × 100',
+      inputs:[{id:'np',label:'Net Profit',sym:true},{id:'inv',label:'Total Investment',sym:true}],
+      rLabel:'Return on Investment',ftag:'Formula: (Net Profit ÷ Total Investment) × 100 = ROI %',
+      fn(){if(gv('inv')<=0)return setRV(null);setRV(gv('np')/gv('inv')*100,'%')}
+    },
+    'contribution':{
+      desc:'After paying variable costs per unit, the leftover is Contribution Margin. This pays fixed costs first — then becomes profit.',
+      fref:'Contribution Margin = Selling Price − Variable Cost',
+      explains:[{q:'What counts as Variable Cost?',a:'<ul><li>Raw material / product cost</li><li>Packaging & labelling</li><li>Shipping & delivery charges</li><li>RTO / return handling</li><li>Payment gateway fees</li><li>COD charges</li><li>Reseller / affiliate commission</li></ul>'}],
+      inputs:[{id:'sp',label:'Selling Price (per unit)',sym:true},{id:'vc',label:'Variable Cost (per unit)',sym:true}],
+      rLabel:'Contribution Margin',ftag:'Formula: Selling Price − Variable Cost = Contribution Margin',
+      fn(){const cm=gv('sp')-gv('vc');setRV(cm);addSub('Margin %',gv('sp')>0?cm/gv('sp')*100:null,'%')}
+    },
+    'pricing':{
+      desc:'Stop guessing prices. Enter cost and desired profit margin — get the exact selling price to charge.',
+      fref:'Selling Price = Cost Price ÷ (1 − Target Margin %)',
+      inputs:[{id:'cp',label:'Cost Price (per unit)',sym:true},{id:'tm',label:'Target Profit Margin',sym:false,hint:'%'}],
+      rLabel:'Ideal Selling Price',ftag:'Formula: Cost ÷ (1 − Target Margin%) = Selling Price',
+      fn(){if(gv('tm')>=100)return setRV(null);const sp=gv('cp')/(1-gv('tm')/100);setRV(sp);addSub('Profit per unit',sp-gv('cp'))}
+    },
+    'profit-ads':{
+      desc:'Revenue is vanity. Profit is reality. See what you actually made after paying everything including ads.',
+      inputs:[{id:'rev',label:'Total Revenue this month',sym:true},{id:'vc',label:'Total Variable Costs',sym:true},{id:'fc',label:'Total Fixed Costs',sym:true},{id:'ads',label:'Total Ad Spend',sym:true}],
+      rLabel:'Net Profit',ftag:'Formula: Revenue − Variable − Fixed − Ads = Net Profit',
+      fn(){const p=gv('rev')-gv('vc')-gv('fc')-gv('ads');setRV(p);addSub('Net Margin %',gv('rev')>0?p/gv('rev')*100:null,'%')}
+    },
+    'gross-margin':{
+      desc:'Gross Margin = Revenue minus Cost of Goods Sold. Shows product profitability before fixed costs.',
+      fref:'Gross Margin % = [(Revenue − COGS) ÷ Revenue] × 100',
+      inputs:[{id:'rev',label:'Total Revenue',sym:true},{id:'cogs',label:'Cost of Goods Sold (COGS)',sym:true}],
+      rLabel:'Gross Margin %',ftag:'Formula: [(Revenue − COGS) ÷ Revenue] × 100',
+      fn(){if(gv('rev')<=0)return setRV(null);const gm=gv('rev')-gv('cogs');setRV(gm/gv('rev')*100,'%');addSub('Gross Profit',gm)}
+    },
+    'net-margin':{
+      desc:'Net Profit Margin = what % of your revenue becomes real profit after ALL expenses. True measure of business health.',
+      fref:'Net Margin % = (Net Profit ÷ Revenue) × 100',
+      inputs:[{id:'np',label:'Net Profit',sym:true},{id:'rev',label:'Total Revenue',sym:true}],
+      rLabel:'Net Profit Margin',ftag:'Formula: (Net Profit ÷ Revenue) × 100',
+      fn(){if(gv('rev')<=0)return setRV(null);setRV(gv('np')/gv('rev')*100,'%')}
+    },
+    'cac':{
+      desc:'CAC = what it costs to get ONE new customer. Compare with LTV. If CAC > LTV, you are losing money.',
+      inputs:[{id:'spend',label:'Total Marketing Spend this month',sym:true},{id:'cust',label:'New Customers this month',sym:false,hint:'#'}],
+      rLabel:'Customer Acquisition Cost',ftag:'Formula: Marketing Spend ÷ New Customers = CAC',
+      fn(){if(gv('cust')<=0)return setRV(null);setRV(gv('spend')/gv('cust'))}
+    },
+    'ltv':{
+      desc:'LTV = total revenue one customer generates over their full relationship with you. Higher LTV = you can spend more on CAC.',
+      inputs:[{id:'aov',label:'Average Order Value',sym:true},{id:'freq',label:'Purchases per year',sym:false,hint:'times/year'},{id:'yrs',label:'Customer lifespan',sym:false,hint:'years'}],
+      rLabel:'Customer LTV',ftag:'Formula: Avg Order Value × Purchase Frequency × Lifespan = LTV',
+      fn(){setRV(gv('aov')*gv('freq')*gv('yrs'))}
+    },
+    'ltv-cac':{
+      desc:'The single most important business health metric. LTV:CAC > 3 = healthy. Between 1–3 = marginal. Below 1 = burning money.',
+      inputs:[{id:'ltv',label:'Customer LTV',sym:true},{id:'cac',label:'Customer CAC',sym:true}],
+      rLabel:'LTV : CAC Ratio',ftag:'Formula: LTV ÷ CAC = Ratio  (Ideal: > 3:1)',
+      fn(){
+        if(gv('cac')<=0)return setRV(null);
+        const r=gv('ltv')/gv('cac');
+        setRV(r,'ratio');
+        const msg=r>=3?'🟢 Healthy — great business model':r>=1?'🟡 Marginal — improve retention or cut CAC':'🔴 Danger — spending more than earning';
+        addSub(msg,null,null,'ltvcac-msg');
+        const s=document.getElementById('ltvcac-msg');if(s)s.innerHTML=`<div style="font-size:13px;color:var(--muted);background:var(--s3);padding:12px;border-radius:6px;margin-top:10px">${msg}</div>`;
+      }
+    },
+    'roas':{
+      desc:'ROAS = Revenue earned per rupee spent on ads. ROAS 4x = ₹4 revenue per ₹1 ad spend. Anything below 1x = losing money on ads.',
+      fref:'ROAS = Revenue from Ads ÷ Ad Spend',
+      inputs:[{id:'rev',label:'Revenue from Ads',sym:true},{id:'spend',label:'Ad Spend',sym:true}],
+      rLabel:'ROAS',ftag:'Formula: Revenue from Ads ÷ Ad Spend = ROAS',
+      fn(){
+        if(gv('spend')<=0)return setRV(null);
+        const r=gv('rev')/gv('spend');
+        const rv=document.getElementById('rv0');if(!rv)return;
+        rv.className='rv'+(r>=4?' good':r>=2?' warn':' neg');rv.style.color='';rv.textContent=r.toFixed(2)+'x';
+      }
+    },
+    'conversion':{
+      desc:'Conversion Rate = % of visitors who buy. Even a 1% improvement can double revenue without increasing ad spend.',
+      fref:'Conversion Rate % = (Conversions ÷ Total Visitors) × 100',
+      inputs:[{id:'conv',label:'Conversions (Sales / Leads)',sym:false,hint:'#'},{id:'vis',label:'Total Visitors / Clicks',sym:false,hint:'#'}],
+      rLabel:'Conversion Rate',ftag:'Formula: (Conversions ÷ Total Visitors) × 100',
+      fn(){if(gv('vis')<=0)return setRV(null);setRV(gv('conv')/gv('vis')*100,'%')}
+    },
+    'burn':{
+      desc:'Burn Rate = how much cash you lose per month. Runway = months before you run out. Every founder must know this number.',
+      inputs:[{id:'exp',label:'Total Monthly Expenses',sym:true},{id:'rev',label:'Monthly Revenue',sym:true},{id:'cash',label:'Cash in Bank right now',sym:true}],
+      rLabel:'Monthly Burn Rate',ftag:'Formula: Expenses − Revenue = Burn Rate · Cash ÷ Burn = Runway',
+      fn(){
+        const burn=gv('exp')-gv('rev');
+        if(burn<=0){const rv=document.getElementById('rv0');if(rv){rv.className='rv good';rv.textContent='Cash Flow +ve'};addSub('You are not burning cash — you are profitable!',null,null,'burn-sub');const s=document.getElementById('burn-sub');if(s)s.innerHTML=`<div style="font-size:13px;color:var(--green);margin-top:10px">✓ You are not burning cash — revenue exceeds expenses!</div>`;return}
+        setRV(burn,'',null);
+        const rw=gv('cash')/burn;
+        let rs=document.getElementById('runway');
+        const rb=document.getElementById('rv0')?.parentNode;
+        if(!rs&&rb){rs=document.createElement('div');rs.id='runway';rs.style.cssText='margin-top:14px;padding-top:14px;border-top:1px solid var(--border)';rb.appendChild(rs)}
+        if(rs)rs.innerHTML=`<div class="rl">Runway</div><div class="mini-val ${rw<3?'neg':rw<6?'warn':'good'}" style="font-size:38px">${rw.toFixed(1)} months</div>`;
+      }
+    },
+    'simple-interest':{
+      desc:'Simple Interest grows linearly on the original principal only. Use for short-term loans and basic fixed deposits.',
+      fref:'SI = (Principal × Rate × Time) ÷ 100',
+      inputs:[{id:'p',label:'Principal Amount',sym:true},{id:'r',label:'Annual Interest Rate',sym:false,hint:'%'},{id:'t',label:'Time Period',sym:false,hint:'years'}],
+      rLabel:'Simple Interest',ftag:'Formula: (P × R × T) ÷ 100 = Simple Interest',
+      fn(){const si=gv('p')*gv('r')*gv('t')/100;setRV(si);addSub('Total Amount',gv('p')+si)}
+    },
+    'compound-interest':{
+      desc:'Compound interest grows exponentially — interest earns interest. The secret of long-term investing and the hidden danger of loans.',
+      fref:'A = P × (1 + R/100)^T',
+      inputs:[{id:'p',label:'Principal Amount',sym:true},{id:'r',label:'Annual Interest Rate',sym:false,hint:'%'},{id:'t',label:'Time Period',sym:false,hint:'years'}],
+      rLabel:'Total Amount',ftag:'Formula: A = P × (1 + R/100)^T',
+      fn(){const a=gv('p')*Math.pow(1+gv('r')/100,gv('t'));setRV(a);addSub('Interest Earned',a-gv('p'))}
+    }
+  };
+
+  const c=C[id];
+  if(!c){body.innerHTML=`<p style="color:var(--muted);padding:40px 0">Coming soon!</p>`;return}
+  body.innerHTML=stdHTML(id,c.desc,c.fref||null,c.inputs,c.rLabel,c.ftag,c.explains||null);
+  autoFn=()=>{if(c.inputs.some(i=>hv(i.id)))c.fn()};
+}
+
+// ── MARKUP vs MARGIN ──
+function renderMM(body){
+  body.innerHTML=`
+  <div class="calc-title">Markup vs Margin</div>
+  <p class="calc-desc">Markup = profit on cost. Margin = profit on selling price. Same profit, different %. Confusing them causes underpricing.</p>
+  <div class="tab-row">
+    <button class="tab-btn active" id="mt1" onclick="smm(1)">Markup → Margin</button>
+    <button class="tab-btn" id="mt2" onclick="smm(2)">Margin → Markup</button>
+  </div>
+  <div id="mm1">
+    <div class="input-section"><div class="input-label">Cost Price</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="m1cp" placeholder="0" min="0" oninput="calcMM(1)"/></div></div>
+    <div class="input-section"><div class="input-label">Markup %</div><div class="input-wrap nsym"><input type="number" id="m1mu" placeholder="0" min="0" oninput="calcMM(1)"/></div></div>
+    <div class="multi-result">
+      <div class="mini-box"><div class="mini-label">Selling Price</div><div class="mini-val" id="m1sp">—</div></div>
+      <div class="mini-box"><div class="mini-label">Margin %</div><div class="mini-val" id="m1mg">—</div></div>
+      <div class="mini-box"><div class="mini-label">Profit Amount</div><div class="mini-val" id="m1pr">—</div></div>
+    </div>
+    <div class="ftag">SP = CP × (1 + Markup%)  ·  Margin% = Profit ÷ SP × 100</div>
+  </div>
+  <div id="mm2" style="display:none">
+    <div class="input-section"><div class="input-label">Cost Price</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="m2cp" placeholder="0" min="0" oninput="calcMM(2)"/></div></div>
+    <div class="input-section"><div class="input-label">Target Margin %</div><div class="input-wrap nsym"><input type="number" id="m2mg" placeholder="0" min="0" max="99" oninput="calcMM(2)"/></div></div>
+    <div class="multi-result">
+      <div class="mini-box"><div class="mini-label">Selling Price</div><div class="mini-val" id="m2sp">—</div></div>
+      <div class="mini-box"><div class="mini-label">Markup %</div><div class="mini-val" id="m2mu">—</div></div>
+      <div class="mini-box"><div class="mini-label">Profit Amount</div><div class="mini-val" id="m2pr">—</div></div>
+    </div>
+    <div class="ftag">SP = CP ÷ (1 − Margin%)  ·  Markup% = Profit ÷ CP × 100</div>
+  </div>
+  ${cfooter()}`;
+}
+function smm(n){document.getElementById('mm1').style.display=n===1?'':'none';document.getElementById('mm2').style.display=n===2?'':'none';document.getElementById('mt1').className='tab-btn'+(n===1?' active':'');document.getElementById('mt2').className='tab-btn'+(n===2?' active':'')}
+function calcMM(t){
+  if(t===1){const cp=parseFloat(document.getElementById('m1cp').value)||0,mu=parseFloat(document.getElementById('m1mu').value)||0,sp=cp*(1+mu/100),pr=sp-cp,mg=sp>0?pr/sp*100:0;document.getElementById('m1sp').textContent=fmt(sp)||'—';document.getElementById('m1mg').textContent=mg.toFixed(2)+'%';document.getElementById('m1pr').textContent=fmt(pr)||'—'}
+  else{const cp=parseFloat(document.getElementById('m2cp').value)||0,mg=parseFloat(document.getElementById('m2mg').value)||0;if(mg>=100)return;const sp=cp/(1-mg/100),pr=sp-cp,mu=cp>0?pr/cp*100:0;document.getElementById('m2sp').textContent=fmt(sp)||'—';document.getElementById('m2mu').textContent=mu.toFixed(2)+'%';document.getElementById('m2pr').textContent=fmt(pr)||'—'}
+}
+
+// ── GST ──
+let gR=18,gT=1;
+function renderGST(body){
+  body.innerHTML=`
+  <div class="calc-title">GST Calculator</div>
+  <p class="calc-desc">GST is not your money. Know exactly how much belongs to the government and how much is yours to keep.</p>
+  <div class="tab-row"><button class="tab-btn active" id="gt1" onclick="sgt(1)">Add GST</button><button class="tab-btn" id="gt2" onclick="sgt(2)">Remove GST</button></div>
+  <div class="field-label">Select GST Slab</div>
+  <div class="slab-row">
+    <button class="slab-btn" id="sl5" onclick="ssl(5)">5%</button>
+    <button class="slab-btn" id="sl12" onclick="ssl(12)">12%</button>
+    <button class="slab-btn active" id="sl18" onclick="ssl(18)">18%</button>
+    <button class="slab-btn" id="sl28" onclick="ssl(28)">28%</button>
+  </div>
+  <div id="g1">
+    <div class="input-section"><div class="input-label">Base Price (before GST)</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="gb" placeholder="0" min="0" oninput="cg(1)"/></div></div>
+    <div class="multi-result"><div class="mini-box"><div class="mini-label">GST Amount</div><div class="mini-val" id="g1a">—</div></div><div class="mini-box"><div class="mini-label">Final Price</div><div class="mini-val" id="g1f">—</div></div></div>
+    <div class="ftag">GST Amount = Base × Rate%  ·  Final = Base + GST</div>
+  </div>
+  <div id="g2" style="display:none">
+    <div class="input-section"><div class="input-label">Price received (GST included)</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="gi" placeholder="0" min="0" oninput="cg(2)"/></div></div>
+    <div class="multi-result"><div class="mini-box"><div class="mini-label">GST Amount</div><div class="mini-val" id="g2a">—</div></div><div class="mini-box"><div class="mini-label">Your Base Price</div><div class="mini-val" id="g2b">—</div></div></div>
+    <div class="ftag">Base = Inclusive ÷ (1 + Rate%)  ·  GST = Inclusive − Base</div>
+  </div>
+  ${cfooter()}`;
+}
+function ssl(r){gR=r;[5,12,18,28].forEach(x=>document.getElementById('sl'+x).className='slab-btn'+(x===r?' active':''));cg(gT)}
+function sgt(n){gT=n;document.getElementById('g1').style.display=n===1?'':'none';document.getElementById('g2').style.display=n===2?'':'none';document.getElementById('gt1').className='tab-btn'+(n===1?' active':'');document.getElementById('gt2').className='tab-btn'+(n===2?' active':'')}
+function cg(t){
+  if(t===1){const b=parseFloat(document.getElementById('gb').value)||0,g=b*gR/100;document.getElementById('g1a').textContent=fmt(g)||'—';document.getElementById('g1f').textContent=fmt(b+g)||'—'}
+  else{const inc=parseFloat(document.getElementById('gi').value)||0,base=inc/(1+gR/100),g=inc-base;document.getElementById('g2a').textContent=fmt(g)||'—';document.getElementById('g2b').textContent=fmt(base)||'—'}
+}
+
+// ── CP from MP ──
+function renderCPMP(body){
+  body.innerHTML=`
+  <div class="calc-title">CP from Marked Price</div>
+  <p class="calc-desc">Formula 9 from the image. When profit is made: CP = MP − (Discount + Profit). When loss is made: CP = MP − (Discount − Loss).</p>
+  <div class="tab-row"><button class="tab-btn active" id="mpt1" onclick="smp(1)">Profit Made</button><button class="tab-btn" id="mpt2" onclick="smp(2)">Loss Made</button></div>
+  <div id="mp1">
+    <div class="input-section"><div class="input-label">Marked Price</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="mp1m" placeholder="0" oninput="cmp(1)"/></div></div>
+    <div class="input-section"><div class="input-label">Discount Amount</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="mp1d" placeholder="0" oninput="cmp(1)"/></div></div>
+    <div class="input-section"><div class="input-label">Profit Amount</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="mp1p" placeholder="0" oninput="cmp(1)"/></div></div>
+    <div class="result-box"><div class="rl">Cost Price</div><div class="rv ph" id="mpcp1">Enter numbers above</div><div class="ftag">CP = MP − (Discount + Profit)</div></div>
+  </div>
+  <div id="mp2" style="display:none">
+    <div class="input-section"><div class="input-label">Marked Price</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="mp2m" placeholder="0" oninput="cmp(2)"/></div></div>
+    <div class="input-section"><div class="input-label">Discount Amount</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="mp2d" placeholder="0" oninput="cmp(2)"/></div></div>
+    <div class="input-section"><div class="input-label">Loss Amount</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="mp2l" placeholder="0" oninput="cmp(2)"/></div></div>
+    <div class="result-box"><div class="rl">Cost Price</div><div class="rv ph" id="mpcp2">Enter numbers above</div><div class="ftag">CP = MP − (Discount − Loss)</div></div>
+  </div>
+  ${cfooter()}`;
+}
+function smp(n){document.getElementById('mp1').style.display=n===1?'':'none';document.getElementById('mp2').style.display=n===2?'':'none';document.getElementById('mpt1').className='tab-btn'+(n===1?' active':'');document.getElementById('mpt2').className='tab-btn'+(n===2?' active':'')}
+function cmp(t){
+  if(t===1){const mp=parseFloat(document.getElementById('mp1m').value)||0,d=parseFloat(document.getElementById('mp1d').value)||0,p=parseFloat(document.getElementById('mp1p').value)||0,cp=mp-(d+p);const el=document.getElementById('mpcp1');el.className='rv'+(cp<0?' neg':'');el.textContent=fmt(cp)||'—'}
+  else{const mp=parseFloat(document.getElementById('mp2m').value)||0,d=parseFloat(document.getElementById('mp2d').value)||0,l=parseFloat(document.getElementById('mp2l').value)||0,cp=mp-(d-l);const el=document.getElementById('mpcp2');el.className='rv'+(cp<0?' neg':'');el.textContent=fmt(cp)||'—'}
+}
+
+// ── CPM & CPC ──
+function renderCPMCPC(body){
+  body.innerHTML=`
+  <div class="calc-title">CPM & CPC</div>
+  <p class="calc-desc">CPM = Cost per 1,000 impressions. CPC = Cost per click. Essential for evaluating your ad campaign efficiency on Meta, Google & more.</p>
+  <div class="tab-row"><button class="tab-btn active" id="cct1" onclick="scc(1)">CPM</button><button class="tab-btn" id="cct2" onclick="scc(2)">CPC</button></div>
+  <div id="cc1">
+    <div class="input-section"><div class="input-label">Total Ad Spend</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="cc1s" placeholder="0" oninput="ccc(1)"/></div></div>
+    <div class="input-section"><div class="input-label">Total Impressions</div><div class="input-wrap nsym"><input type="number" id="cc1i" placeholder="0" oninput="ccc(1)"/></div></div>
+    <div class="result-box"><div class="rl">CPM (Cost per 1000 impressions)</div><div class="rv ph" id="cc1r">Enter numbers above</div><div class="ftag">CPM = (Ad Spend ÷ Impressions) × 1000</div></div>
+  </div>
+  <div id="cc2" style="display:none">
+    <div class="input-section"><div class="input-label">Total Ad Spend</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="cc2s" placeholder="0" oninput="ccc(2)"/></div></div>
+    <div class="input-section"><div class="input-label">Total Clicks</div><div class="input-wrap nsym"><input type="number" id="cc2c" placeholder="0" oninput="ccc(2)"/></div></div>
+    <div class="result-box"><div class="rl">CPC (Cost per Click)</div><div class="rv ph" id="cc2r">Enter numbers above</div><div class="ftag">CPC = Total Ad Spend ÷ Total Clicks</div></div>
+  </div>
+  ${cfooter()}`;
+}
+function scc(n){document.getElementById('cc1').style.display=n===1?'':'none';document.getElementById('cc2').style.display=n===2?'':'none';document.getElementById('cct1').className='tab-btn'+(n===1?' active':'');document.getElementById('cct2').className='tab-btn'+(n===2?' active':'')}
+function ccc(t){
+  if(t===1){const s=parseFloat(document.getElementById('cc1s').value)||0,i=parseFloat(document.getElementById('cc1i').value)||0,el=document.getElementById('cc1r');if(!i){el.className='rv ph';el.textContent='Enter numbers above';return}el.className='rv';el.textContent=fmt(s/i*1000)||'—'}
+  else{const s=parseFloat(document.getElementById('cc2s').value)||0,c=parseFloat(document.getElementById('cc2c').value)||0,el=document.getElementById('cc2r');if(!c){el.className='rv ph';el.textContent='Enter numbers above';return}el.className='rv';el.textContent=fmt(s/c)||'—'}
+}
+
+// ── EMI ──
+function renderEMI(body){
+  body.innerHTML=`
+  <div class="calc-title">EMI Calculator</div>
+  <p class="calc-desc">Know your exact monthly loan payment before signing anything. EMI = [P × R × (1+R)^N] ÷ [(1+R)^N − 1]  where R is monthly rate.</p>
+  <div class="input-section"><div class="input-label">Loan Amount (Principal)</div><div class="input-wrap"><span class="csym">${sym}</span><input type="number" id="ep" placeholder="0" min="0" oninput="ce()"/></div></div>
+  <div class="input-section"><div class="input-label">Annual Interest Rate <span class="hint">(%)</span></div><div class="input-wrap nsym"><input type="number" id="er" placeholder="0" min="0" oninput="ce()"/></div></div>
+  <div class="input-section"><div class="input-label">Loan Tenure <span class="hint">(months)</span></div><div class="input-wrap nsym"><input type="number" id="en" placeholder="0" min="1" oninput="ce()"/></div></div>
+  <div class="multi-result">
+    <div class="mini-box"><div class="mini-label">Monthly EMI</div><div class="mini-val" id="eemi">—</div></div>
+    <div class="mini-box"><div class="mini-label">Total Payment</div><div class="mini-val" id="etot">—</div></div>
+    <div class="mini-box"><div class="mini-label">Total Interest</div><div class="mini-val warn" id="eint">—</div></div>
+  </div>
+  <div class="ftag">EMI = [P × R × (1+R)^N] ÷ [(1+R)^N − 1]</div>
+  ${cfooter()}`;
+}
+function ce(){
+  const P=parseFloat(document.getElementById('ep').value)||0,aR=parseFloat(document.getElementById('er').value)||0,N=parseFloat(document.getElementById('en').value)||0;
+  if(!P||!aR||!N)return;
+  const R=aR/12/100,emi=P*R*Math.pow(1+R,N)/(Math.pow(1+R,N)-1),tot=emi*N,int=tot-P;
+  document.getElementById('eemi').textContent=fmt(emi)||'—';
+  document.getElementById('etot').textContent=fmt(tot)||'—';
+  document.getElementById('eint').textContent=fmt(int)||'—';
+}
+</script>
+</body>
+</html>
